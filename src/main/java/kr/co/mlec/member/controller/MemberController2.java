@@ -1,19 +1,16 @@
 package kr.co.mlec.member.controller;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.bind.support.SessionStatus;
 
 import kr.co.mlec.member.service.MemberService;
 import kr.co.mlec.member.vo.MemberVO;
 
-@SessionAttributes("userVO")
-@Controller
-public class MemberController {
+//@Controller
+public class MemberController2 {
 
 	@Autowired
 	private MemberService memberService;
@@ -25,7 +22,7 @@ public class MemberController {
 	}
 	
 	@PostMapping("/login")
-	public String login(MemberVO member, Model model) {
+	public String login(MemberVO member, HttpSession session) {
 
 		MemberVO userVO = memberService.login(member);
 		if(userVO == null) {
@@ -33,15 +30,15 @@ public class MemberController {
 			return "login/login";
 		}
 		// 로그인 성공
-		model.addAttribute("userVO", userVO);
+		session.setAttribute("userVO", userVO);
 		
 		return "redirect:/";
 	}
 	
 	@GetMapping("/logout")
-	public String logout(SessionStatus status) {
+	public String logout(HttpSession session) {
 		
-		status.setComplete();
+		session.invalidate();
 		
 		return "redirect:/";
 	}

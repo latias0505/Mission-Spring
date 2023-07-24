@@ -3,6 +3,7 @@ package kr.co.mlec.board.controller;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import kr.co.mlec.board.service.BoardService;
 import kr.co.mlec.board.vo.BoardVO;
+import kr.co.mlec.member.vo.MemberVO;
 
 @Controller
 public class BoardController {
@@ -31,8 +33,8 @@ public class BoardController {
 		
 		request.setAttribute("boardList", boardList);
 		
-		return "board/list";
-//		return "board/list2";
+//		return "board/list";
+		return "board/list2";
 	}
 	
 	// http://localhost:8080/Mission-Spring/board/detail?no=4
@@ -54,28 +56,27 @@ public class BoardController {
 	// http://localhost:8080/Mission-Spring/board/24
 	// http://localhost:8080/Mission-Spring/board/3
 	@GetMapping("/board/{no}")
-//	public String detail2(@PathVariable("no") int boardNo, HttpServletRequest request) {
 	public ModelAndView detail2(@PathVariable("no") int boardNo, HttpServletRequest request) {
 		
 		System.out.println("boardNo : " + boardNo);
 		// no번에 해당 게시글 조회
 		BoardVO board = boardService.getBoardByNo(boardNo);
-		
+
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("board/detail");
 		mav.addObject("board", board);
-		
+	
 		return mav;
-
-		// 공유영역 등록
-//		request.setAttribute("board", board);
-
-//		return "board/detail";
 	}
 	
 	@GetMapping("/board/write")
-	public void writeForm(Model model) {
+	public void writeForm(Model model, HttpSession session) {
 		BoardVO board = new BoardVO();
+		
+		MemberVO userVO = (MemberVO)session.getAttribute("userVO");
+		if(userVO != null) {
+			board.setWriter(userVO.getId());
+		}
 		
 		model.addAttribute("boardVO", board);
 	}
@@ -84,6 +85,7 @@ public class BoardController {
 	public String write(@Valid BoardVO board, BindingResult result) {
 		
 		if(result.hasErrors()) {
+			System.out.println("에러발생!!");
 			return "board/write";
 		}
 		
@@ -92,6 +94,14 @@ public class BoardController {
 		return "redirect:/board";
 	}
 }
+
+
+
+
+
+
+
+
 
 
 
