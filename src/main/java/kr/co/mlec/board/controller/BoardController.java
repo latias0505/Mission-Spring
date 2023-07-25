@@ -57,8 +57,7 @@ public class BoardController {
 	// http://localhost:8080/Mission-Spring/board/3
 	@GetMapping("/board/{no}")
 	public ModelAndView detail2(@PathVariable("no") int boardNo, HttpServletRequest request) {
-		
-		System.out.println("boardNo : " + boardNo);
+
 		// no번에 해당 게시글 조회
 		BoardVO board = boardService.getBoardByNo(boardNo);
 
@@ -85,7 +84,7 @@ public class BoardController {
 	public String write(@Valid BoardVO board, BindingResult result) {
 		
 		if(result.hasErrors()) {
-			System.out.println("에러발생!!");
+
 			return "board/write";
 		}
 		
